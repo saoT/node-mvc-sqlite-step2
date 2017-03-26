@@ -3,18 +3,24 @@
 
 const db = require('../../database');
 
+//------------------ /!\ ------------------//
+// N'oubliez pas de rajouter la méthode pour chaque route.
+// ----------------------------------------//
 const users  = {
- // method...
 
+  // Find a user by name
+  find : function (req, res) {
+    db.all('SELECT * from users WHERE mail=?', req.query.mail, (err, data) => {
+      if (!err) res.send('Operation completed ' + data[0]);
+      else res.send('Operation failed :: ' + err);
+    });
+  },
+
+  // create a new user
   create : (req, res) => {
-    // var newUser = new UserSchema({ email: 'sdsjh.dhf@dhfg.com' })
-    const newUser = new db.users(req.body);
-    newUser.save()
-    .then ( data => {
-      res.send(`Operation succeeded : \n ${data}`);
-    })
-    .catch ( err => {
-      res.send('Operation failed : \n' + err);
+    db.run('INSERT into users values (?)', req.body.mail, err => {
+      if (err) res.send('Operation failed : \n' + err);
+      else res.send(`Operation succeeded !`);
     });
   }
 
